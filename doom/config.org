@@ -1,0 +1,274 @@
+#+title: Config
+
+* table of contents :toc:
+- [[#doom-settings][doom settings]]
+  - [[#themeing][themeing]]
+  - [[#navigation-binds][navigation binds]]
+- [[#org][org]]
+  - [[#org-roam][org-roam]]
+- [[#vterm][vterm]]
+- [[#tramp][tramp]]
+- [[#utilities][utilities]]
+- [[#lsp][lsp]]
+- [[#typst][typst]]
+- [[#markdown][Markdown]]
+
+* doom settings
+#+begin_src emacs-lisp
+(setq display-line-numbers-type 'relative)
+(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-banner)
+(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
+(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-footer)
+
+(defun +my/dashboard-insert-centered-block (lines)
+  "Insert LINES as a single centered block with consistent left padding."
+  (let* ((maxlen (apply #'max (mapcar #'string-width lines)))
+         (pad (max 0 (/ (- +doom-dashboard--width maxlen) 2))))
+    (dolist (l lines)
+      (insert (make-string pad ?\s) l "\n"))))
+
+(defun +my/cowsay-banner ()
+  (let* ((msg "GNU Emacs")
+         (width (+ 2 (length msg))) ; padding inside bubble
+         (top    (concat " " (make-string (+ width 2) ?_)))
+         (mid    (format "< %s >" msg))
+         (bottom (concat " " (make-string (+ width 2) ?-)))
+         (lines (list
+                 ""
+                 top
+                 mid
+                 bottom
+                 ""
+                 "        \\   ^__^"
+                 "         \\  (oo)\\_______"
+                 "            (__)\\       )\\/\\"
+                 "                ||----w |" "                ||     ||"
+                 "")))
+    (insert "\n")
+    (+my/dashboard-insert-centered-block lines)
+    (insert "\n")))
+
+(add-hook! '+doom-dashboard-functions :append
+  #'+my/cowsay-banner)
+
+;; --- Dired: kill rainbow coloring completely (theme-safe) ---
+(after! dired
+  ;; Force GNU ls to NEVER output colors (even if your env/dircolors would)
+  (setq insert-directory-program "ls"
+        dired-listing-switches "-alh --group-directories-first --color=never")
+
+  ;; Make sure per-buffer diredfl doesn't get enabled by hooks
+  (remove-hook 'dired-mode-hook #'diredfl-mode)
+  (add-hook 'dired-mode-hook (lambda () (when (bound-and-true-p diredfl-mode)
+                                         (diredfl-mode -1)))))
+
+(after! diredfl
+  ;; Kill global diredfl too
+  (diredfl-global-mode -1))
+
+(after! all-the-icons-dired
+  (remove-hook 'dired-mode-hook #'all-the-icons-dired-mode))
+
+#+end_src
+
+** themeing
+#+begin_src emacs-lisp
+(setq doom-font (font-spec :family "GoMono Nerd Font" :size 17)
+      doom-variable-pitch-font (font-spec :family "SF Pro Display" :size 18)
+      doom-big-font (font-spec :family "GoMono Nerd Font" :size 22))
+
+(setq doom-theme 'darktooth)
+
+#+end_src
+
+** navigation binds
+#+begin_src emacs-lisp
+(map! :leader
+      :desc "Open vterm" "o t" #'vterm
+      :desc "Magit status" "g g" #'magit-status
+      :desc "Project search" "/" #'consult-ripgrep
+      :desc "Find file in project" "p f" #'projectile-find-file)
+#+end_src
+
+* org
+#+begin_src emacs-lisp
+(setq org-directory "~/org/")
+
+;; --- Minimal agenda scope (3-file system) ---
+(setq org-agenda-files
+      (list "~/org/main.org"
+            "~/org/journal.org"))
+
+;; --- Logging + visuals ---
+(setq org-log-done 'time
+      org-hide-emphasis-markers t
+      org-pretty-entities t)
+
+(setq-default line-spacing 0.15)
+
+;; --- TODO states ---
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "INPROGRESS(i)" "BLOCKED(b)" "|"
+                  "DONE(d)" "CANCELLED(c)")))
+
+;; --- Cover-your-ass archive ---
+(setq org-archive-location "~/org/archive.org::datetree/")
+
+;; --- Habits ---
+(require 'org-habit)
+(add-to-list 'org-modules 'org-habit)
+(setq org-habit-graph-column 60)
+
+;; --- Capture ---
+(setq org-capture-templates
+      '(("t" "Todo" entry
+         (file+headline "~/org/main.org" "Tasks")
+         "* TODO %?\n  %u\n  %a\n")
+        ("j" "Journal" entry
+         (file+datetree "~/org/journal.org")
+         "* %?\nEntered on %U\n")
+        ("h" "Habit" entry
+         (file+headline "~/org/main.org" "Habits")
+         "* TODO %?\nSCHEDULED: <%<%Y-%m-%d %a> +1d>\n:PROPERTIES:\n:STYLE: habit\n:END:\n")))
+
+;; --- Inline images ---
+(after! org
+  (setq org-image-actual-width 600))
+
+;; --- Drag/drop & clipboard images (requires :lang (org +dragndrop)) ---
+(after! org-download
+  ;; Store images globally inside ~/org/img/
+  (setq org-download-image-dir (expand-file-name "img" org-directory)
+        org-download-heading-lvl nil)
+
+  ;; Ensure ~/org/img exists
+  (unless (file-directory-p org-download-image-dir)
+    (make-directory org-download-image-dir t)))
+
+;; --- Your heading sizing (kept exactly) ---
+(custom-set-faces!
+  '(org-level-8 :inherit outline-3 :height 1.0)
+  '(org-level-7 :inherit outline-3 :height 1.0)
+  '(org-level-6 :inherit outline-3 :height 1.1)
+  '(org-level-5 :inherit outline-3 :height 1.2)
+  '(org-level-4 :inherit outline-3 :height 1.3)
+  '(org-level-3 :inherit outline-3 :height 1.4)
+  '(org-level-2 :inherit outline-2 :height 1.5)
+  '(org-level-1 :inherit outline-1 :height 1.6)
+  '(org-document-title :height 1.8 :bold t :underline nil))
+#+end_src
+
+** org-roam
+#+begin_src emacs-lisp
+(after! org-roam
+  ;; Tell org-roam where your vault is
+  (setq org-roam-directory (file-truename "~/org/roam/")
+        org-roam-completion-everywhere t)
+
+  ;; Keep the database updated automatically
+  (org-roam-db-autosync-mode 1))
+#+end_src
+
+
+* vterm
+#+begin_src emacs-lisp
+(after! vterm
+  (setq vterm-shell "/bin/bash")
+
+  ;; Always start in insert state so it behaves like a real terminal
+  (add-hook 'vterm-mode-hook #'evil-insert-state)
+
+  ;; Make sure Evil doesn't default to normal mode in vterm
+  (evil-set-initial-state 'vterm-mode 'insert))
+#+end_src
+
+* tramp
+#+begin_src emacs-lisp
+(after! tramp
+  (setq tramp-default-method "ssh")
+  (setq tramp-verbose 1)
+  (setq tramp-use-ssh-controlmaster-options t))
+#+end_src
+
+* utilities
+#+begin_src emacs-lisp
+;; auto reload changed files
+(global-auto-revert-mode 1)
+
+;; cleaner backups
+(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+(setq auto-save-default nil)
+#+end_src
+
+* lsp
+#+begin_src emacs-lisp
+(setq lsp-enable-symbol-highlighting t
+      lsp-headerline-breadcrumb-enable nil
+      lsp-modeline-code-actions-enable t
+      lsp-idle-delay 0.5)
+
+;; Only run this once lsp-mode actually exists (prevents void-function errors)
+(after! lsp-mode
+  (setq lsp-typst-server-command '("tinymist")))
+
+;; Start LSP only if lsp-mode is installed/enabled in Doom
+(add-hook 'typst-ts-mode-hook
+          (lambda ()
+            (when (fboundp 'lsp-deferred)
+              (lsp-deferred))))
+#+end_src
+
+* typst
+#+begin_src emacs-lisp
+;; Stronger treesitter highlighting
+(after! treesit
+  (setq treesit-font-lock-level 4)
+  (add-to-list 'treesit-language-source-alist
+               '(typst . ("https://github.com/uben0/tree-sitter-typst"))))
+
+;; Major mode for .typ
+(use-package! typst-ts-mode
+  :mode "\\.typ\\'")
+
+;; typst-preview.el (tinymist-based live preview)
+(use-package! typst-preview
+  :commands (typst-preview-mode typst-preview-start typst-preview-stop
+                                typst-preview-restart typst-preview-send-position)
+  :init
+  (setq typst-preview-autostart t
+        typst-preview-open-browser-automatically t
+        typst-preview-browser "default"
+        typst-preview-executable "tinymist"
+        typst-preview-partial-rendering t)
+
+  :config
+  (map! :map typst-ts-mode-map
+        :localleader
+        :desc "Preview toggle" "p" #'typst-preview-mode
+        :desc "Preview start"  "s" #'typst-preview-start
+        :desc "Preview stop"   "S" #'typst-preview-stop
+        :desc "Preview restart" "r" #'typst-preview-restart
+        :desc "Sync cursor -> preview" "j" #'typst-preview-send-position))
+#+end_src
+
+* Markdown
+#+begin_src emacs-lisp
+;; --- Markdown: minimal writing mode (no live preview) ---
+(after! markdown-mode
+  (setq markdown-fontify-code-blocks-natively t
+        markdown-hide-markup t
+        markdown-enable-math t
+        markdown-asymmetric-header t)
+
+  ;; Soft wrap
+  (add-hook 'markdown-mode-hook #'visual-line-mode)
+
+  ;; Centered writing column
+  (add-hook 'markdown-mode-hook #'visual-fill-column-mode)
+  (setq visual-fill-column-width 92
+        visual-fill-column-center-text t)
+
+  ;; Nice typography (text proportional, code fixed)
+  (add-hook 'markdown-mode-hook #'variable-pitch-mode)
+  (add-hook 'markdown-mode-hook #'mixed-pitch-mode))
+#+end_src
