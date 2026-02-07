@@ -57,6 +57,7 @@
       doom-big-font (font-spec :family "GoMono Nerd Font" :size 22))
 
 (setq doom-theme 'darktooth)
+(blink-cursor-mode 1)
 
 (map! :leader
       :desc "Open vterm" "o t" #'vterm
