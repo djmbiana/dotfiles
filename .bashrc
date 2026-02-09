@@ -1,6 +1,8 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
 
 export PATH="$HOME/.nix-profile/bin:$PATH"
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
 
 # If not running interactively, don't do anything
 case $- in

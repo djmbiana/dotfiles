@@ -69,3 +69,6 @@
 ;; markdown stuff
 (package! visual-fill-column)   ;; centered writing column
 (package! mixed-pitch)          ;; variable-pitch text, fixed-pitch code
+
+;; go stuff
+(package! go-mode)

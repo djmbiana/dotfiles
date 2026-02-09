@@ -11,7 +11,9 @@
 - [[#utilities][utilities]]
 - [[#lsp][lsp]]
 - [[#typst][typst]]
-- [[#markdown][Markdown]]
+- [[#markdown][markdown]]
+- [[#go][go]]
+- [[#mutlitple-cursors][mutlitple-cursors]]
 
 * doom settings
 #+begin_src emacs-lisp
@@ -24,8 +26,7 @@
   "Insert LINES as a single centered block with consistent left padding."
   (let* ((maxlen (apply #'max (mapcar #'string-width lines)))
          (pad (max 0 (/ (- +doom-dashboard--width maxlen) 2))))
-    (dolist (l lines)
-      (insert (make-string pad ?\s) l "\n"))))
+    (dolist (l lines) (insert (make-string pad ?\s) l "\n"))))
 
 (defun +my/cowsay-banner ()
   (let* ((msg "GNU Emacs")
@@ -77,8 +78,18 @@
       doom-variable-pitch-font (font-spec :family "SF Pro Display" :size 18)
       doom-big-font (font-spec :family "GoMono Nerd Font" :size 22))
 
-(setq doom-theme 'darktooth)
+;; custom theme directory
+(add-to-list 'custom-theme-load-path
+             "/home/derrick/dotfiles/doom/themes")
+
+(setq doom-theme 'doom-goplay-dark)
 (blink-cursor-mode 1)
+
+;; mode line theme
+(setq doom-modeline-icon t)
+(setq doom-modeline-major-mode-icon t)
+(setq doom-modeline-lsp-icon t)
+(setq doom-modeline-major-mode-color-icon t)
 #+end_src
 
 ** navigation binds
@@ -251,7 +262,7 @@
         :desc "Sync cursor -> preview" "j" #'typst-preview-send-position))
 #+end_src
 
-* Markdown
+* markdown
 #+begin_src emacs-lisp
 ;; --- Markdown: minimal writing mode (no live preview) ---
 (after! markdown-mode
@@ -271,4 +282,37 @@
   ;; Nice typography (text proportional, code fixed)
   (add-hook 'markdown-mode-hook #'variable-pitch-mode)
   (add-hook 'markdown-mode-hook #'mixed-pitch-mode))
+#+end_src
+
+* go
+#+begin_src bash
+(setenv "PATH" (concat (getenv "PATH") ":/usr/local/go/bin:/home/derrick/go/bin"))
+(setq exec-path (append exec-path '("/usr/local/go/bin" "/home/derrick/go/bin")))
+
+(after! go-mode
+  (setq lsp-go-gopls-server-path "/home/derrick/go/bin/gopls"))
+#+end_src
+
+* mutlitple-cursors
+#+begin_src emacs-lisp
+(after! evil-mc
+  ;; Enable it globally
+  (global-evil-mc-mode 1)
+
+  ;; Basic bindings
+  (map! :nv "g z m" #'evil-mc-make-all-cursors
+        :nv "g z u" #'evil-mc-undo-all-cursors
+        :nv "g z q" #'evil-mc-undo-all-cursors
+        :nv "g z d" #'evil-mc-make-and-goto-first-cursor
+        :nv "g z j" #'evil-mc-make-cursor-move-next-line
+        :nv "g z k" #'evil-mc-make-cursor-move-prev-line
+
+        ;; Most useful ones:
+        :nv "C-n" #'evil-mc-make-and-goto-next-match
+        :nv "C-p" #'evil-mc-make-and-goto-prev-match
+        :nv "C-t" #'evil-mc-skip-and-goto-next-match
+
+        ;; In visual mode
+        :v "A" #'evil-mc-make-cursor-in-visual-selection-end
+        :v "I" #'evil-mc-make-cursor-in-visual-selection-beg))
 #+end_src
