@@ -1,0 +1,29 @@
+# Volgograd (dark forest industrial)
+
+[colors.primary]
+background = '#181a1b'
+foreground = '#cfd6dd'
+
+[colors.cursor]
+text = '#000000'
+cursor = '#ffdd33'
+
+[colors.normal]
+black   = '#1f2326'
+red     = '#c97f6f'
+green   = '#8faa6a'
+yellow  = '#d3b58d'
+blue    = '#6b737c'
+magenta = '#7f9f7f'
+cyan    = '#a7c080'
+white   = '#cfd6dd'
+
+[colors.bright]
+black   = '#2a2f33'
+red     = '#c97f6f'
+green   = '#a7c080'
+yellow  = '#d3b58d'
+blue    = '#a5adb6'
+magenta = '#8faa6a'
+cyan    = '#a7c080'
+white   = '#e6edf3'

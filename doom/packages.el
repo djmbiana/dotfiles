@@ -58,6 +58,7 @@
 (package! catppuccin-theme)
 (package! gruber-darker-theme)
 (package! darktooth-theme)
+(package! nano-theme)
 
 ;; typst packages
 (package! typst-ts-mode)

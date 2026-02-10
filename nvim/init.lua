@@ -22,6 +22,7 @@ vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
 vim.opt.softtabstop = 2
+vim.cmd.colorscheme("volgograd")
 
 -- basic keymaps
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
@@ -305,13 +306,6 @@ require('lazy').setup({
 
 {
   "ellisonleao/gruvbox.nvim",
-  priority = 1000,
-  config = function()
-    require("gruvbox").setup({
-      contrast = "medium", -- "soft", "medium", "hard"
-      transparent_mode = false,
-    })
-    vim.cmd.colorscheme("gruvbox")
-  end
+  lazy = true,
 },
 })

@@ -1,0 +1,29 @@
+# Pripyat (warm paper forest)
+
+[colors.primary]
+background = '#f4f1e6'
+foreground = '#3c3a33'
+
+[colors.cursor]
+text = '#000000'
+cursor = '#ffdd33'
+
+[colors.normal]
+black   = '#ede8da'
+red     = '#c97f6f'
+green   = '#5f7f4f'
+yellow  = '#a68b5b'
+blue    = '#9d9787'
+magenta = '#8f9f7f'
+cyan    = '#6f8f5f'
+white   = '#3c3a33'
+
+[colors.bright]
+black   = '#e2dccb'
+red     = '#c97f6f'
+green   = '#6f8f5f'
+yellow  = '#a68b5b'
+blue    = '#b8b2a1'
+magenta = '#8f9f7f'
+cyan    = '#6f8f5f'
+white   = '#2f2c25'

@@ -17,16 +17,16 @@
    (base7      '("#e5e7eb" "#979797" "brightblack"))
    (base8      '("#f3f4f6" "#dfdfdf" "white"))
    (fg         '("#e5e7eb" "#dfdfdf" "white"))
-   (fg-alt     '("#9ca3af" "#979797" "white"))
+   (fg-alt     '("#e5e7eb" "#dfdfdf" "white"))
 
-   ;; All semantic colors map to foreground (no syntax highlighting)
-   (grey       base5)
+   ;; All semantic colors map to foreground
+   (grey       fg)
    (red        fg)
    (orange     fg)
    (green      fg)
    (teal       fg)
    (yellow     fg)
-   (blue       fg)
+   (blue       '("#60a5fa" "#60a5fa" "blue"))  ; For links
    (dark-blue  fg)
    (magenta    fg)
    (violet     fg)
@@ -38,8 +38,8 @@
    (vertical-bar   base3)
    (selection      base3)
    (builtin        fg)
-   (comments       fg-alt)
-   (doc-comments   fg-alt)
+   (comments       fg)
+   (doc-comments   fg)
    (constants      fg)
    (functions      fg)
    (keywords       fg)
@@ -58,19 +58,19 @@
    (vc-deleted     fg)
 
    (modeline-fg              fg)
-   (modeline-fg-alt          base6)
+   (modeline-fg-alt          fg)
    (modeline-bg              base1)
    (modeline-bg-inactive     base1)
-   (modeline-fg-inactive     base5))
+   (modeline-fg-inactive     fg))
 
   ;;;; Base theme face overrides
   ((default :background bg :foreground fg)
 
-   ;; Remove ALL syntax highlighting
+   ;; ALL text same bright color
    (font-lock-builtin-face :foreground fg :weight 'normal)
-   (font-lock-comment-face :foreground fg-alt :weight 'normal :slant 'normal)
-   (font-lock-comment-delimiter-face :foreground fg-alt :weight 'normal)
-   (font-lock-doc-face :foreground fg-alt :weight 'normal)
+   (font-lock-comment-face :foreground fg :weight 'normal :slant 'normal)
+   (font-lock-comment-delimiter-face :foreground fg :weight 'normal)
+   (font-lock-doc-face :foreground fg :weight 'normal)
    (font-lock-constant-face :foreground fg :weight 'normal)
    (font-lock-function-name-face :foreground fg :weight 'normal)
    (font-lock-keyword-face :foreground fg :weight 'normal)
@@ -83,46 +83,80 @@
    (font-lock-regexp-grouping-backslash :foreground fg :weight 'normal)
    (font-lock-regexp-grouping-construct :foreground fg :weight 'normal)
 
+   ;; Markdown headers - all white
+   (markdown-header-face :foreground fg :weight 'normal)
+   (markdown-header-face-1 :foreground fg :weight 'normal :height 1.0)
+   (markdown-header-face-2 :foreground fg :weight 'normal :height 1.0)
+   (markdown-header-face-3 :foreground fg :weight 'normal :height 1.0)
+   (markdown-header-face-4 :foreground fg :weight 'normal :height 1.0)
+   (markdown-header-face-5 :foreground fg :weight 'normal :height 1.0)
+   (markdown-header-face-6 :foreground fg :weight 'normal :height 1.0)
+   (markdown-header-delimiter-face :foreground fg :weight 'normal)
+   (markdown-markup-face :foreground fg :weight 'normal)
+   (markdown-inline-code-face :foreground fg :background bg-alt)
+   (markdown-pre-face :foreground fg)
+   (markdown-code-face :foreground fg :background bg-alt)
+   (markdown-list-face :foreground fg :weight 'normal)
+   (markdown-bold-face :foreground fg :weight 'normal)
+   (markdown-italic-face :foreground fg :slant 'normal)
+   ;; Markdown links - readable blue
+   (markdown-link-face :foreground blue :underline t :weight 'normal)
+   (markdown-url-face :foreground blue :underline t :weight 'normal)
+
+   ;; Org mode headers - all white
+   (org-level-1 :foreground fg :weight 'normal :height 1.0)
+   (org-level-2 :foreground fg :weight 'normal :height 1.0)
+   (org-level-3 :foreground fg :weight 'normal :height 1.0)
+   (org-level-4 :foreground fg :weight 'normal :height 1.0)
+   (org-level-5 :foreground fg :weight 'normal :height 1.0)
+   (org-level-6 :foreground fg :weight 'normal :height 1.0)
+   (org-level-7 :foreground fg :weight 'normal :height 1.0)
+   (org-level-8 :foreground fg :weight 'normal :height 1.0)
+   (org-document-title :foreground fg :weight 'normal :height 1.0)
+   (org-document-info :foreground fg :weight 'normal)
+   (org-meta-line :foreground fg :weight 'normal)
+   (org-block :background bg-alt :foreground fg)
+   (org-block-begin-line :foreground fg :background bg-alt)
+   (org-block-end-line :foreground fg :background bg-alt)
+   (org-drawer :foreground fg)
+   (org-special-keyword :foreground fg :weight 'normal)
+   (org-tag :foreground fg :weight 'normal)
+   ;; Org list definition terms - white
+   (org-list-dt :foreground fg :weight 'normal)
+   ;; Org links - readable blue
+   (org-link :foreground blue :underline t :weight 'normal)
+
    ;; Line numbers
    (line-number :foreground base4 :background bg)
    (line-number-current-line :foreground fg :background bg-alt :weight 'normal)
 
-   ;; UI elements matching Go Playground
+   ;; UI elements
    (cursor :background fg)
    (hl-line :background base1)
    (region :background base3)
    (highlight :background base2)
    (vertical-border :foreground base2)
    (fringe :background bg :foreground base4)
+   (shadow :foreground fg)
 
    ;; Modeline
    (mode-line :background base1 :foreground fg)
-   (mode-line-inactive :background base1 :foreground base5)
+   (mode-line-inactive :background base1 :foreground fg)
    (mode-line-emphasis :foreground fg :weight 'normal)
+   (doom-modeline-buffer-file :foreground fg :weight 'normal)
+   (doom-modeline-buffer-modified :foreground fg :weight 'normal)
+   (doom-modeline-project-dir :foreground fg :weight 'normal)
 
    ;; Minibuffer
    (minibuffer-prompt :foreground fg :weight 'normal)
 
-   ;; Links
-   (link :foreground fg :underline t :weight 'normal)
-   (link-visited :foreground fg-alt :underline t :weight 'normal)
+   ;; Links (general)
+   (link :foreground blue :underline t :weight 'normal)
+   (link-visited :foreground blue :underline t :weight 'normal)
 
    ;; Search
    (isearch :background base3 :foreground fg :weight 'normal)
-   (lazy-highlight :background base2 :foreground fg :weight 'normal)
-
-   ;; Org mode (minimal)
-   (org-level-1 :foreground fg :weight 'normal)
-   (org-level-2 :foreground fg :weight 'normal)
-   (org-level-3 :foreground fg :weight 'normal)
-   (org-level-4 :foreground fg :weight 'normal)
-   (org-level-5 :foreground fg :weight 'normal)
-   (org-level-6 :foreground fg :weight 'normal)
-   (org-document-title :foreground fg :weight 'normal)
-   (org-meta-line :foreground fg-alt :weight 'normal)
-   (org-block :background bg-alt :foreground fg)
-   (org-block-begin-line :foreground fg-alt :background bg-alt)
-   (org-block-end-line :foreground fg-alt :background bg-alt)))
+   (lazy-highlight :background base2 :foreground fg :weight 'normal)))
 
 (provide-theme 'doom-goplay-dark)
 ;;; doom-goplay-dark-theme.el ends here

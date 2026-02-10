@@ -1,4 +1,3 @@
-(setq display-line-numbers-type 'relative)
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-banner)
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-footer)
@@ -39,8 +38,7 @@
   (setq insert-directory-program "ls"
         dired-listing-switches "-alh --group-directories-first --color=never")
 
-  ;; Make sure per-buffer diredfl doesn't get enabled by hooks
-  (remove-hook 'dired-mode-hook #'diredfl-mode)
+  ;; Make sure per-buffer diredfl doesn't get enabled by hooks (remove-hook 'dired-mode-hook #'diredfl-mode)
   (add-hook 'dired-mode-hook (lambda () (when (bound-and-true-p diredfl-mode)
                                          (diredfl-mode -1)))))
 
@@ -59,7 +57,7 @@
 (add-to-list 'custom-theme-load-path
              "/home/derrick/dotfiles/doom/themes")
 
-(setq doom-theme 'doom-goplay-dark)
+(setq doom-theme 'doom-volgograd)
 (blink-cursor-mode 1)
 
 ;; mode line theme
@@ -68,11 +66,17 @@
 (setq doom-modeline-lsp-icon t)
 (setq doom-modeline-major-mode-color-icon t)
 
+;; navigation binds
 (map! :leader
-      :desc "Open vterm" "o t" #'vterm
+      :desc "Toggle vterm" "o t" #'+vterm/toggle
       :desc "Magit status" "g g" #'magit-status
       :desc "Project search" "/" #'consult-ripgrep
-      :desc "Find file in project" "p f" #'projectile-find-file)
+      :desc "Find file in project" "p f" #'projectile-find-file
+
+      ;; Zoom
+      :desc "Zoom in"    "z i" #'text-scale-increase
+      :desc "Zoom out"   "z o" #'text-scale-decrease
+      :desc "Zoom reset" "z r" (lambda () (interactive) (text-scale-set 0)))
 
 (setq org-directory "~/org/")
 
