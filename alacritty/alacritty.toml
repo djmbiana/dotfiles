@@ -1,6 +1,6 @@
 [font]
-normal = { family = "GoMono Nerd Font", style = "Regular" }
-size = 15.0
+normal = { family = "Ioskeley Mono", style = "Regular" }
+size = 16.0
 
 # Window padding
 [window]

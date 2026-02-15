@@ -7,7 +7,8 @@
  '(custom-safe-themes
    '("e27c9668d7eddf75373fa6b07475ae2d6892185f07ebed037eedf783318761d7"
      "f1e8339b04aef8f145dd4782d03499d9d716fdc0361319411ac2efc603249326" default))
- '(package-selected-packages '(all-the-icons doom-themes gruber-darker-theme))
+ '(package-selected-packages
+   '(all-the-icons all-the-icons-nerd-fonts doom-themes gruber-darker-theme))
  '(safe-local-variable-values '((eval progn (pp-buffer) (indent-buffer)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

@@ -49,9 +49,9 @@
 (after! all-the-icons-dired
   (remove-hook 'dired-mode-hook #'all-the-icons-dired-mode))
 
-(setq doom-font (font-spec :family "GoMono Nerd Font" :size 17)
+(setq doom-font (font-spec :family "Ioskeley Mono" :size 16)
       doom-variable-pitch-font (font-spec :family "SF Pro Display" :size 18)
-      doom-big-font (font-spec :family "GoMono Nerd Font" :size 22))
+      doom-big-font (font-spec :family "Ioskeley Mono" :size 22))
 
 ;; custom theme directory
 (add-to-list 'custom-theme-load-path
@@ -65,6 +65,9 @@
 (setq doom-modeline-major-mode-icon t)
 (setq doom-modeline-lsp-icon t)
 (setq doom-modeline-major-mode-color-icon t)
+
+(setq pdf-view-midnight-colors '("#839496" . "#002b36"))
+(add-hook 'pdf-view-mode-hook #'pdf-view-midnight-minor-mode)
 
 ;; navigation binds
 (map! :leader
